@@ -59,6 +59,7 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
 
         return data as D;
       },
+      reset: () => store.reset(),
     } as AsyncSlice<D, P>;
   };
 }

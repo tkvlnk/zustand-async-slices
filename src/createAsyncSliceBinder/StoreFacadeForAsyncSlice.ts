@@ -80,4 +80,17 @@ export class StoreFacadeForAsyncSlice<S, K extends AsyncSliceKeys<S>> {
       };
     }, `${this.namespace.toString()}/${AsyncStatus.Error}`);
   }
+
+  reset() {
+    this.setSlice(
+      () => ({
+        data: null,
+        status: AsyncStatus.Idle,
+        lastExecParams: undefined,
+        pendingExecParams: [],
+        errorMessage: null,
+      }),
+      `${this.namespace.toString()}/reset`
+    );
+  }
 }
