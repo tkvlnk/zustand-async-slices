@@ -8,4 +8,5 @@ export declare class StoreFacadeForAsyncSlice<S, K extends AsyncSliceKeys<S>> {
     handleStart(execParams: AsyncSliceAtKey<S, K>["pendingExecParams"][number]): void;
     handleSuccess(data: AsyncSliceAtKey<S, K>["data"], params: AsyncSliceAtKey<S, K>["pendingExecParams"][number]): void;
     handleError(errorMessage: string, params: AsyncSliceAtKey<S, K>["pendingExecParams"][number]): void;
+    reset(): void;
 }

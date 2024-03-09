@@ -46,5 +46,14 @@ class StoreFacadeForAsyncSlice {
             };
         }, `${this.namespace.toString()}/${types_1.AsyncStatus.Error}`);
     }
+    reset() {
+        this.setSlice(() => ({
+            data: null,
+            status: types_1.AsyncStatus.Idle,
+            lastExecParams: undefined,
+            pendingExecParams: [],
+            errorMessage: null,
+        }), `${this.namespace.toString()}/reset`);
+    }
 }
 exports.StoreFacadeForAsyncSlice = StoreFacadeForAsyncSlice;

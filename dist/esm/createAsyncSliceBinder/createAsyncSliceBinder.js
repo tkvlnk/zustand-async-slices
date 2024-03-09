@@ -46,6 +46,7 @@ export function createAsyncSliceBinder(storeApi) {
                 }
                 return data;
             },
+            reset: () => store.reset(),
         };
     };
 }

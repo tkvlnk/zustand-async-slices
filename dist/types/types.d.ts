@@ -17,6 +17,7 @@ export interface AsyncSlice<D = unknown, P extends unknown[] = unknown[]> {
     isLoading(): boolean;
     isPending(): boolean;
     get(): D;
+    reset(): void;
 }
 export type AsyncSliceKeys<S> = {
     [K in keyof S]: S[K] extends AsyncSlice ? K : never;
