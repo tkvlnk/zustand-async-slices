@@ -1,5 +1,5 @@
 import { createStore } from "zustand";
-import { withAsyncSlices } from "./withAsyncSlices";
+import { addAsyncSlices } from "./addAsyncSlices";
 import { AsyncSliceCtx, AsyncStatus, StateWithAsyncSlices } from "./types";
 
 const logger = jest.fn();
@@ -30,7 +30,7 @@ type StoreState = StateWithAsyncSlices<
   {
     counter: number;
     increment(): void;
-    doubleCount(): number
+    doubleCount(): number;
   },
   typeof methods
 >;
@@ -39,20 +39,21 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const createTestStore = () =>
   createStore(
-    withAsyncSlices<StoreState>((set, get) => ({
-      counter: 0,
-      increment() {
-        set((state) => ({ counter: state.counter + 1 }));
-      },
-      doubleCount() {
-        return get().counter * 2;
-      },
-    }))({
-      asyncMethods: methods,
-      contextExtension: {
+    addAsyncSlices<StoreState>()(
+      (set, get) => ({
+        counter: 0,
+        increment() {
+          set((state) => ({ counter: state.counter + 1 }));
+        },
+        doubleCount() {
+          return get().counter * 2;
+        },
+      }),
+      methods,
+      {
         logger,
-      },
-    })
+      }
+    )
   );
 
 it("should be in in success state after full delay", async () => {
