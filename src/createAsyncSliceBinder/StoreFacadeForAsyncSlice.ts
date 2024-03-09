@@ -6,7 +6,6 @@ import {
   StoreApiEssence,
 } from "../types";
 
-
 export class StoreFacadeForAsyncSlice<S, K extends AsyncSliceKeys<S>> {
   constructor(private namespace: K, private store: StoreApiEssence<S>) {}
 
