@@ -1,6 +1,6 @@
 import type { StateCreator } from "zustand";
-import type { AsyncSliceKeys, StoreApiEssence } from "./types";
-import { createAsyncSliceBinder } from "./createAsyncSliceBinder/createAsyncSliceBinder";
+import type { AsyncSliceKeys, StoreApiEssence } from "../types";
+import { createAsyncSliceBinder } from "../createAsyncSliceBinder/createAsyncSliceBinder";
 
 export function addAsyncSlices<
   S,

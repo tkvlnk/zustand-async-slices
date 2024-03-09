@@ -1,6 +1,6 @@
 import { createStore } from "zustand";
 import { addAsyncSlices } from "./addAsyncSlices";
-import { AsyncSliceCtx, AsyncStatus, StateWithAsyncSlices } from "./types";
+import { AsyncSliceCtx, AsyncStatus, StateWithAsyncSlices } from "../types";
 
 const logger = jest.fn();
 
