@@ -2,21 +2,32 @@
   "name": "zustand-async-slices",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "exports": {
+    "./*": {
+      "types": "./build/types/*.d.ts",
+      "require": "./build/cjs/*.js",
+      "import": "./build/esm/*.js",
+      "default": "./build/esm/*.js"
+    }
+  },
   "scripts": {
-    "build": "tsc --target es5 --module commonjs --outDir dist/cjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pnpm run build:clean && pnpm run build:all",
+    "build:all": "tsc -b tsconfig.cjs.json tsconfig.esm.json tsconfig.types.json",
+    "build:clean": "rm -rf ./dist",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "typescript": "^5.4.2",
-    "zustand": "^4.5.2"
+    "typescript": "^5.4.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2"
+  },
+  "peerDependencies": {
+    "zustand": "^4.5.2"
   }
 }
