@@ -116,7 +116,7 @@ it("should throw for executeStrict while error", async () => {
   const DELAY = 1000;
 
   expect(
-    store.getState().waitFor.executeStrict({ ok: false, delay: DELAY })
+    store.getState().waitFor.executeAsync({ ok: false, delay: DELAY })
   ).rejects.toMatchObject({ message: `not ok after ${DELAY}ms` });
 });
 
@@ -126,8 +126,8 @@ it("should not throw for execute while error", async () => {
   const DELAY = 1000;
 
   expect(
-    store.getState().waitFor.execute({ ok: false, delay: DELAY })
-  ).resolves.toBe(undefined);
+    () => store.getState().waitFor.execute({ ok: false, delay: DELAY })
+  ).not.toThrow();
 });
 
 it("should keep being pending until all the executions are done", async () => {
@@ -141,11 +141,11 @@ it("should keep being pending until all the executions are done", async () => {
 
   store
     .getState()
-    .waitFor.execute({ ok: true, delay: LONG_DELAY })
+    .waitFor.executeAsync({ ok: true, delay: LONG_DELAY })
     .then(LONG_CB);
   store
     .getState()
-    .waitFor.execute({ ok: true, delay: SHOWRT_DELAY })
+    .waitFor.executeAsync({ ok: true, delay: SHOWRT_DELAY })
     .then(SHORT_CB);
 
   expect(store.getState().waitFor.pendingExecParams).toEqual([

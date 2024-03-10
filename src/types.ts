@@ -9,11 +9,11 @@ export const AsyncStatus = {
 
 export type AsyncStatus = typeof AsyncStatus[keyof typeof AsyncStatus];
 
-export interface AsyncSlice<D = unknown, P extends unknown[] = unknown[]> {
+export type AsyncSlice<D = unknown, P extends unknown[] = unknown[]> = {
   data: D | null;
   status: AsyncStatus;
-  execute(...params: P): Promise<void>;
-  executeStrict(...params: P): Promise<void>;
+  execute(...params: P): void;
+  executeAsync(...params: P): Promise<void>;
   pendingExecParams: P[];
   lastExecParams: P | undefined;
   errorMessage: string | null;

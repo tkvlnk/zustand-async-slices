@@ -15,7 +15,7 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
   ) => {
     const store = new StoreFacadeForAsyncSlice<S, K>(namespace, storeApi);
 
-    const executeStrict = async (...params: P) => {
+    const executeAsync = async (...params: P) => {
       store.handleStart(params);
 
       try {
@@ -35,8 +35,8 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
       errorMessage: null,
       lastExecParams: undefined,
       pendingExecParams: [],
-      executeStrict,
-      execute: (...params: P) => executeStrict(...params).catch(() => {}),
+      executeAsync,
+      execute: (...params: P) => void executeAsync(...params).catch(() => {}),
       isPending: () => store.getSlice().status === AsyncStatus.Pending,
       isLoading: () =>
         ([AsyncStatus.Idle, AsyncStatus.Pending] as AsyncStatus[]).includes(
