@@ -1,19 +1,19 @@
 import type { StateCreator } from "zustand";
-import type { AsyncSliceKeys, StoreApiEssence } from "../types";
+import type { AsyncSliceCtx, AsyncSliceKeys, StoreApiEssence } from "../types";
 import { createAsyncSliceBinder } from "../createAsyncSliceBinder/createAsyncSliceBinder";
 
 export function asyncSlices<
-  S,
+  StoreState,
   Context extends Record<string, unknown>,
   Methods extends Record<
-    AsyncSliceKeys<S>,
-    (this: Context & StoreApiEssence<S>, ...params: never[]) => Promise<unknown>
+    AsyncSliceKeys<StoreState>,
+    (this: AsyncSliceCtx<StoreState, Context>, ...params: never[]) => Promise<unknown>
   >
 >(
-  stateCreator: StateCreator<Omit<S, AsyncSliceKeys<S>>>,
+  stateCreator: StateCreator<Omit<StoreState, AsyncSliceKeys<StoreState>>>,
   asyncMethods: Methods,
   additionalAsyncMethodContext = {} as Context
-): StateCreator<S> {
+): StateCreator<StoreState> {
   return (setState, getState, api) => {
     const bindAsyncSlice = createAsyncSliceBinder(api);
 
@@ -28,7 +28,7 @@ export function asyncSlices<
         Object.entries(asyncMethods).map(([key, fetcher]) => [
           key,
           bindAsyncSlice(
-            key as AsyncSliceKeys<S>,
+            key as AsyncSliceKeys<StoreState>,
             (fetcher as Function).bind(ctx)
           ),
         ])
@@ -37,6 +37,6 @@ export function asyncSlices<
     return {
       ...stateCreator(setState, getState, api),
       ...bindAllAsyncSlices(),
-    } as S;
+    } as StoreState;
   };
 }

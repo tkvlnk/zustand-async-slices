@@ -36,9 +36,12 @@ it("should should have proper initial state", () => {
   expect(state.waitFor.data).toBeNull();
   expect(state.waitFor.lastExecParams).toBeUndefined();
   expect(state.waitFor.pendingExecParams).toEqual([]);
-  expect(state.waitFor.errorMessage).toBeNull();
-  expect(state.waitFor.isLoading()).toBe(true);
+  expect(state.waitFor.error).toBeNull();
+  expect(state.waitFor.isIdle()).toBe(true);
   expect(state.waitFor.isPending()).toBe(false);
+  expect(state.waitFor.isSuccess()).toBe(false);
+  expect(state.waitFor.isError()).toBe(false);
+  expect(state.waitFor.isSettled()).toBe(false);
   expect(() => state.waitFor.get()).toThrow();
 });
 
@@ -58,9 +61,12 @@ it("should be in pending state after execution", async () => {
   expect(state.waitFor.pendingExecParams).toEqual([
     [{ ok: true, delay: 1000 }],
   ]);
-  expect(state.waitFor.errorMessage).toBeNull();
-  expect(state.waitFor.isLoading()).toBe(true);
+  expect(state.waitFor.error).toBeNull();
+  expect(state.waitFor.isIdle()).toBe(false);
   expect(state.waitFor.isPending()).toBe(true);
+  expect(state.waitFor.isSuccess()).toBe(false);
+  expect(state.waitFor.isError()).toBe(false);
+  expect(state.waitFor.isSettled()).toBe(false);
   expect(() => state.waitFor.get()).toThrow();
 });
 
@@ -81,9 +87,12 @@ it("should be in in success state after full delay", async () => {
   expect(state.waitFor.data).toBe(`ok after ${DELAY}ms`);
   expect(state.waitFor.lastExecParams).toEqual([{ ok: true, delay: 1000 }]);
   expect(state.waitFor.pendingExecParams).toEqual([]);
-  expect(state.waitFor.errorMessage).toBeNull();
-  expect(state.waitFor.isLoading()).toBe(false);
+  expect(state.waitFor.error).toBeNull();
+  expect(state.waitFor.isIdle()).toBe(false);
   expect(state.waitFor.isPending()).toBe(false);
+  expect(state.waitFor.isSuccess()).toBe(true);
+  expect(state.waitFor.isError()).toBe(false);
+  expect(state.waitFor.isSettled()).toBe(true);
   expect(state.waitFor.get()).toBe(`ok after ${DELAY}ms`);
 });
 
@@ -104,10 +113,17 @@ it("should be in error state after full delay", async () => {
   expect(state.waitFor.data).toBeNull();
   expect(state.waitFor.lastExecParams).toEqual([{ ok: false, delay: 1000 }]);
   expect(state.waitFor.pendingExecParams).toEqual([]);
-  expect(state.waitFor.errorMessage).toBe(`not ok after ${DELAY}ms`);
-  expect(state.waitFor.isLoading()).toBe(false);
+  expect(state.waitFor.error).toMatchObject({
+    message: `not ok after ${DELAY}ms`,
+  });
+  expect(state.waitFor.isIdle()).toBe(false);
   expect(state.waitFor.isPending()).toBe(false);
-  expect(() => state.waitFor.get()).toThrow();
+  expect(state.waitFor.isSuccess()).toBe(false);
+  expect(state.waitFor.isError()).toBe(true);
+  expect(state.waitFor.isSettled()).toBe(true);
+  expect(() => state.waitFor.get()).toThrow(
+    `Value of 'waitFor' is not available.\nRelated error message: not ok after ${DELAY}ms`
+  );
 });
 
 it("should throw for executeStrict while error", async () => {
@@ -125,8 +141,8 @@ it("should not throw for execute while error", async () => {
 
   const DELAY = 1000;
 
-  expect(
-    () => store.getState().waitFor.execute({ ok: false, delay: DELAY })
+  expect(() =>
+    store.getState().waitFor.execute({ ok: false, delay: DELAY })
   ).not.toThrow();
 });
 

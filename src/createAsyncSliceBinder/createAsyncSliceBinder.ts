@@ -23,7 +23,7 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
 
         store.handleSuccess(data, params);
       } catch (error) {
-        store.handleError((error as Error).message, params);
+        store.handleError(error as Error, params);
 
         throw error;
       }
@@ -31,26 +31,28 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
 
     return {
       data: null,
-      status: "idle",
-      errorMessage: null,
+      status: AsyncStatus.Idle,
+      error: null,
       lastExecParams: undefined,
       pendingExecParams: [],
       executeAsync,
       execute: (...params: P) => void executeAsync(...params).catch(() => {}),
-      isPending: () => store.getSlice().status === AsyncStatus.Pending,
-      isLoading: () =>
-        ([AsyncStatus.Idle, AsyncStatus.Pending] as AsyncStatus[]).includes(
+      isSettled: () =>
+        ([AsyncStatus.Success, AsyncStatus.Error] as AsyncStatus[]).includes(
           store.getSlice().status
         ),
+      isIdle: () => store.getSlice().status === AsyncStatus.Idle,
+      isPending: () => store.getSlice().status === AsyncStatus.Pending,
+      isSuccess: () => store.getSlice().status === AsyncStatus.Success,
+      isError: () => store.getSlice().status === AsyncStatus.Error,
       get: () => {
-        const { data, errorMessage } = store.getSlice();
+        const { data, error } = store.getSlice();
 
-        /* istanbul ignore if */
         if (!data) {
           throw new Error(
             [
               `Value of '${namespace.toString()}' is not available.`,
-              errorMessage && `Related error message: ${errorMessage}`,
+              error?.message && `Related error message: ${error.message}`,
             ]
               .filter(Boolean)
               .join("\n")
@@ -63,3 +65,4 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
     } as AsyncSlice<D, P>;
   };
 }
+

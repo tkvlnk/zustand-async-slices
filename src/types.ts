@@ -11,14 +11,17 @@ export type AsyncStatus = typeof AsyncStatus[keyof typeof AsyncStatus];
 
 export type AsyncSlice<D = unknown, P extends unknown[] = unknown[]> = {
   data: D | null;
+  error: Error | null;
   status: AsyncStatus;
   execute(...params: P): void;
   executeAsync(...params: P): Promise<void>;
   pendingExecParams: P[];
   lastExecParams: P | undefined;
-  errorMessage: string | null;
-  isLoading(): boolean;
+  isSettled(): boolean;
+  isIdle(): boolean;
   isPending(): boolean;
+  isSuccess(): boolean;
+  isError(): boolean;
   get(): D;
   reset(): void;
 }

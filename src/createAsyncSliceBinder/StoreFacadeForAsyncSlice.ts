@@ -62,7 +62,7 @@ export class StoreFacadeForAsyncSlice<S, K extends AsyncSliceKeys<S>> {
   }
 
   handleError(
-    errorMessage: string,
+    error: Error,
     params: AsyncSliceAtKey<S, K>["pendingExecParams"][number]
   ) {
     this.setSlice((current) => {
@@ -71,7 +71,7 @@ export class StoreFacadeForAsyncSlice<S, K extends AsyncSliceKeys<S>> {
       );
 
       return {
-        errorMessage,
+        error,
         pendingExecParams,
         status:
           pendingExecParams.length > 0
