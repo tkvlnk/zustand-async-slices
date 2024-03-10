@@ -15,34 +15,36 @@ const StoreFacadeForAsyncSlice_1 = require("./StoreFacadeForAsyncSlice");
 function createAsyncSliceBinder(storeApi) {
     return (namespace, fetcher) => {
         const store = new StoreFacadeForAsyncSlice_1.StoreFacadeForAsyncSlice(namespace, storeApi);
-        const executeStrict = (...params) => __awaiter(this, void 0, void 0, function* () {
+        const executeAsync = (...params) => __awaiter(this, void 0, void 0, function* () {
             store.handleStart(params);
             try {
                 const data = yield fetcher(...params);
                 store.handleSuccess(data, params);
             }
             catch (error) {
-                store.handleError(error.message, params);
+                store.handleError(error, params);
                 throw error;
             }
         });
         return {
             data: null,
-            status: "idle",
-            errorMessage: null,
+            status: types_1.AsyncStatus.Idle,
+            error: null,
             lastExecParams: undefined,
             pendingExecParams: [],
-            executeStrict,
-            execute: (...params) => executeStrict(...params).catch(() => { }),
+            executeAsync,
+            execute: (...params) => void executeAsync(...params).catch(() => { }),
+            isSettled: () => [types_1.AsyncStatus.Success, types_1.AsyncStatus.Error].includes(store.getSlice().status),
+            isIdle: () => store.getSlice().status === types_1.AsyncStatus.Idle,
             isPending: () => store.getSlice().status === types_1.AsyncStatus.Pending,
-            isLoading: () => [types_1.AsyncStatus.Idle, types_1.AsyncStatus.Pending].includes(store.getSlice().status),
+            isSuccess: () => store.getSlice().status === types_1.AsyncStatus.Success,
+            isError: () => store.getSlice().status === types_1.AsyncStatus.Error,
             get: () => {
-                const { data, errorMessage } = store.getSlice();
-                /* istanbul ignore if */
+                const { data, error } = store.getSlice();
                 if (!data) {
                     throw new Error([
                         `Value of '${namespace.toString()}' is not available.`,
-                        errorMessage && `Related error message: ${errorMessage}`,
+                        (error === null || error === void 0 ? void 0 : error.message) && `Related error message: ${error.message}`,
                     ]
                         .filter(Boolean)
                         .join("\n"));

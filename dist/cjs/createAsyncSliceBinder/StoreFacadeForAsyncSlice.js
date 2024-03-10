@@ -34,11 +34,11 @@ class StoreFacadeForAsyncSlice {
             };
         }, `${this.namespace.toString()}/${types_1.AsyncStatus.Success}`);
     }
-    handleError(errorMessage, params) {
+    handleError(error, params) {
         this.setSlice((current) => {
             const pendingExecParams = current.pendingExecParams.filter((currParams) => currParams !== params);
             return {
-                errorMessage,
+                error,
                 pendingExecParams,
                 status: pendingExecParams.length > 0
                     ? types_1.AsyncStatus.Pending

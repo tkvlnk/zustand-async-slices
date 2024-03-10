@@ -6,19 +6,22 @@ export declare const AsyncStatus: {
     readonly Error: "error";
 };
 export type AsyncStatus = typeof AsyncStatus[keyof typeof AsyncStatus];
-export interface AsyncSlice<D = unknown, P extends unknown[] = unknown[]> {
+export type AsyncSlice<D = unknown, P extends unknown[] = unknown[]> = {
     data: D | null;
+    error: Error | null;
     status: AsyncStatus;
-    execute(...params: P): Promise<void>;
-    executeStrict(...params: P): Promise<void>;
+    execute(...params: P): void;
+    executeAsync(...params: P): Promise<void>;
     pendingExecParams: P[];
     lastExecParams: P | undefined;
-    errorMessage: string | null;
-    isLoading(): boolean;
+    isSettled(): boolean;
+    isIdle(): boolean;
     isPending(): boolean;
+    isSuccess(): boolean;
+    isError(): boolean;
     get(): D;
     reset(): void;
-}
+};
 export type AsyncSliceKeys<S> = {
     [K in keyof S]: S[K] extends AsyncSlice ? K : never;
 }[keyof S];
