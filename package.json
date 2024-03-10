@@ -2,14 +2,9 @@
   "name": "zustand-async-slices",
   "version": "1.2.1",
   "description": "",
-  "exports": {
-    "./*": {
-      "types": "./dist/types/*.d.ts",
-      "require": "./dist/cjs/*.js",
-      "import": "./dist/esm/*.js",
-      "default": "./dist/esm/*.js"
-    }
-  },
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "scripts": {
     "build": "pnpm run build:clean && pnpm run build:all",
     "build:all": "tsc -b tsconfig.cjs.json tsconfig.esm.json tsconfig.types.json",
