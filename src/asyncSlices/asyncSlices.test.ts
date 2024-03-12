@@ -42,7 +42,7 @@ type StoreState = StateWithAsyncSlices<
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const createTestStore = () =>
-  createStore<StoreState>(
+  createStore<StoreState>()(
     asyncSlices(
       (set, get) => ({
         counter: 0,
