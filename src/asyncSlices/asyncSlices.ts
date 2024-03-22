@@ -5,7 +5,7 @@ import { createAsyncSliceBinder } from "../createAsyncSliceBinder/createAsyncSli
 
 declare module "zustand" {
   interface StoreMutators<S, A> {
-    "zustand/async-slices": S;
+    "zustand/async-slices": A extends Record<string, unknown> ? StateWithAsyncSlices<S, A> : S;
   }
 }
 
@@ -33,7 +33,7 @@ export function asyncSlices<
 ): StateCreator<
   StoreState,
   Mis,
-  [...Mos, ["zustand/async-slices", never]],
+  [...Mos, ["zustand/async-slices", Methods]],
   Omit<StoreState, AsyncSliceKeys<StoreState>>
 > {
   return (setState, getState, api) => {
