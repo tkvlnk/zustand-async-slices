@@ -29,14 +29,18 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
       }
     };
 
-    return {
+    return Object.assign(Object.create(jsonableSlice), {
       data: null,
       status: AsyncStatus.Idle,
       error: null,
       lastExecParams: undefined,
       pendingExecParams: [],
       executeAsync,
-      execute: (...params: P) => void executeAsync(...params).catch(() => {}),
+      execute: (...params: P): void =>
+        void executeAsync(...params).then(
+          () => {},
+          () => {}
+        ),
       isSettled: () =>
         ([AsyncStatus.Success, AsyncStatus.Error] as AsyncStatus[]).includes(
           store.getSlice().status
@@ -62,7 +66,14 @@ export function createAsyncSliceBinder<S>(storeApi: StoreApiEssence<S>) {
         return data as D;
       },
       reset: () => store.reset(),
-    } as AsyncSlice<D, P>;
+    }) as AsyncSlice<D, P>;
   };
 }
 
+const jsonableSlice = {
+  toJSON() {
+    const { error, ...json } = this as { error?: Error };
+
+    return { ...json, error: error?.message };
+  },
+};
