@@ -33,8 +33,7 @@ export function asyncSlices<
 ): StateCreator<
   StoreState,
   Mis,
-  [...Mos, ["zustand/async-slices", Methods]],
-  Omit<StoreState, AsyncSliceKeys<StoreState>>
+  [...Mos, ["zustand/async-slices", Methods]]
 > {
   return (setState, getState, api) => {
     const bindAsyncSlice = createAsyncSliceBinder(api);
