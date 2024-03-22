@@ -1,6 +1,6 @@
 import type { StateCreator, StoreMutatorIdentifier } from "zustand";
 import type { AsyncSliceCtx, AsyncSliceKeys, StateWithAsyncSlices } from "../types";
-declare module "zustand" {
+declare module "zustand/vanilla" {
     interface StoreMutators<S, A> {
         "zustand/async-slices": A extends Record<string, unknown> ? StateWithAsyncSlices<S, A> : S;
     }
